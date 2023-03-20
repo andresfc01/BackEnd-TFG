@@ -21,11 +21,17 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 
+//rutas api
 var authRouter = require('./routes/auth.routes');
 app.use('/api/auth',authRouter);
 
 var medidaRouter = require('./routes/medida.routes');
 app.use('/api/medida',medidaRouter);
+
+var pesoRouter = require('./routes/peso.routes');
+app.use('/api/peso',pesoRouter);
+
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

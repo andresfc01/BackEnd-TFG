@@ -4,7 +4,8 @@ const MedidaSchema = new Schema(
     {
       user: {
         ref:'User',
-        type: Schema.Types.ObjectId
+        type: Schema.Types.ObjectId,
+        required : true,
       },
       fecha: {
         type: Date,
