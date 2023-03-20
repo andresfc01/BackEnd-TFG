@@ -20,6 +20,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//esta carpeta se podrá ver en la parte publica del navegador 
+app.use('/uploads', express.static(path.resolve('uploads')))
+
+const multer = require('./libs/multer')
 
 //rutas api
 var authRouter = require('./routes/auth.routes');
@@ -30,6 +34,9 @@ app.use('/api/medida',medidaRouter);
 
 var pesoRouter = require('./routes/peso.routes');
 app.use('/api/peso',pesoRouter);
+
+var userRouter = require('./routes/user.routes');
+app.use('/api/user',userRouter);
 
 
 
