@@ -17,24 +17,6 @@ const getAll = async (req, res, next) => {
 };
 
 /**
- * Get todas las users de un user
- * @param {*} req
- * @param {*} res
- * @param {*} next
- */
-const getAllUser = async (req, res, next) => {
-  //encuentra las users de un alumno solo
-  try {
-    var ObjectId = require("mongoose").Types.ObjectId;
-    let users = await User.find({ user: new ObjectId(req.params.user) });
-    res.status(200).json(users);
-    res.status(200).json(users);
-  } catch (error) {
-    res.status(401).json(error);
-  }
-};
-
-/**
  * Consigo una user por id
  * @param {*} req
  * @param {*} res
@@ -59,7 +41,7 @@ const create = async (req, res, next) => {
   try {
     const { username, email, password, roles, objetivoFisico, pesoObjetivo } =
       req.body;
-  
+
     const newUser = new User({
       username,
       email,
@@ -67,7 +49,7 @@ const create = async (req, res, next) => {
       objetivoFisico,
       pesoObjetivo,
     });
-  
+
     //asgino los roles
     if (roles) {
       //busco los roles con el nombre (de entre el array de roles)
@@ -79,7 +61,7 @@ const create = async (req, res, next) => {
       let id = rol._id;
       newUser.roles = [id];
     }
-  
+
     if (req.file) {
       //creo el obj imagen y lo asigno al user
       const newImage = {
@@ -89,10 +71,10 @@ const create = async (req, res, next) => {
       };
       newUser.image = newImage;
     }
-  
+
     const savedUser = await newUser.save();
     //guardo el token y lo devuelvo
-  
+
     res.status(201).json(savedUser);
   } catch (error) {
     res.status(401).json(error);
@@ -106,13 +88,18 @@ const create = async (req, res, next) => {
  * @param {*} next
  */
 const update = async (req, res, next) => {
-  try {
-    let user = await User.findByIdAndUpdate(req.params.id, req.body, {
-      new: true,
-    });
-    res.status(200).json(user);
-  } catch (error) {
-    res.status(401).json(error);
+  //compruebo si esta editando su propio perfil, si no no puede
+  if (req.userId == req.body._id) {
+    try {
+      let user = await User.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      });
+      res.status(200).json(user);
+    } catch (error) {
+      res.status(401).json(error);
+    }
+  }else{
+    res.status(402).json('Unauthorized, you can edit only your user');
   }
 };
 
@@ -131,4 +118,4 @@ const remove = async (req, res, next) => {
   }
 };
 
-module.exports = { getAll, getAllUser, getById, create, update, remove };
+module.exports = { getAll, getById, create, update, remove };
