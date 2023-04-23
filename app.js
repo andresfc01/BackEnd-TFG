@@ -38,6 +38,9 @@ app.use('/api/peso',pesoRouter);
 var userRouter = require('./routes/user.routes');
 app.use('/api/user',userRouter);
 
+var grupoMuscularRouter = require('./routes/grupoMuscular.routes');
+app.use('/api/grupoMuscular',grupoMuscularRouter);
+
 
 
 // catch 404 and forward to error handler
