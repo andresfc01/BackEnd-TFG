@@ -47,6 +47,9 @@ app.use('/api/ejercicio',ejercicioRouter);
 var plantillaEntrenamientoRouter = require('./routes/plantillaEntrenamiento.routes');
 app.use('/api/plantillaEntrenamiento',plantillaEntrenamientoRouter);
 
+var entrenamientoRouter = require('./routes/entrenamiento.routes');
+app.use('/api/entrenamiento',entrenamientoRouter);
+
 
 
 // catch 404 and forward to error handler

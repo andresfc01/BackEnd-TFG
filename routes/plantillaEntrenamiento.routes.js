@@ -9,7 +9,7 @@ router
    * POST /singup, code 200 - 400 USERNAME EN USOS / 401 EMAIL EN USO
    */
   //subo la imagen con multer antes de nda
-  .post("/", [verifyToken, isAdmin, multer.single('image')], PlantillaEntrenamientoCtrl.create)
+  .post("/", [verifyToken, multer.single('image')], PlantillaEntrenamientoCtrl.create)
   /**
    * GET /api/grupoMuscular, code 200
    */
@@ -22,10 +22,10 @@ router
    * PUT /api/grupoMuscular/id , code 200
    * comprueba que este logueado y admin
    */
-  .put("/:id", [verifyToken, isAdmin], PlantillaEntrenamientoCtrl.update)
+  .put("/:id", [verifyToken], PlantillaEntrenamientoCtrl.update)
   /**
    * DELTE /api/grupoMuscular/id , code 200
    */
-  .delete("/:id", [verifyToken, isAdmin], PlantillaEntrenamientoCtrl.remove);
+  .delete("/:id", [verifyToken], PlantillaEntrenamientoCtrl.remove);
 
 module.exports = router;
