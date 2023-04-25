@@ -44,6 +44,9 @@ app.use('/api/grupoMuscular',grupoMuscularRouter);
 var ejercicioRouter = require('./routes/ejercicio.routes');
 app.use('/api/ejercicio',ejercicioRouter);
 
+var plantillaEntrenamientoRouter = require('./routes/plantillaEntrenamiento.routes');
+app.use('/api/plantillaEntrenamiento',plantillaEntrenamientoRouter);
+
 
 
 // catch 404 and forward to error handler
