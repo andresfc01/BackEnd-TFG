@@ -12,7 +12,7 @@ const verifyToken = async (req, res, next) => {
 
     //lo decodifico para sacar la id del user
     const decoded = jwt.verify(token, config.SECRET);
-    req.userId = decoded.id; 
+    req.userId = decoded.id;
 
     //busco el user con la id
     const user = await User.findById(req.userId, { password: 0 });
@@ -21,7 +21,7 @@ const verifyToken = async (req, res, next) => {
     //si todo esta bien ejectuo la siguiente funcion
     next();
   } catch (error) {
-    return res.status(500).json({"message":"unauthorized"})
+    return res.status(500).json({ message: "unauthorized" });
   }
 };
 
@@ -29,19 +29,20 @@ const verifyToken = async (req, res, next) => {
 const isAdmin = async (req, res, next) => {
   const user = await User.findById(req.userId);
   //busco los roles que tenga de id de los roles del user
-  const roles = await Role.find({_id: {$in: user.roles}})
+  const roles = await Role.find({ _id: { $in: user.roles } });
 
   //si el rol es admin retorna y continua
   for (let i = 0; i < roles.length; i++) {
-    if (roles[i].name === 'admin') {
+    if (roles[i].name === "admin") {
       next();
-      console.log("es admin")
+      console.log("es admin");
       return;
     }
   }
 
   //si no es admin revuelve error 403
-  return res.status(403).json({message:'Require admin role'})
-}
+  return res.status(403).json({ message: "Require admin role" });
+  next();
+};
 
-module.exports = {verifyToken, isAdmin};
+module.exports = { verifyToken, isAdmin };

@@ -15,6 +15,10 @@ const EjercicioSchema = new Schema(
       type: String,
       required: true,
     },
+    dificultad: {
+      type: Number,
+      required: true,
+    },
     image: {
       mimeType: String,
       filename: String,

@@ -37,27 +37,37 @@ const signUp = async (req, res, next) => {
       };
       newUser.image = newImage;
     }
+    console.log("file", req.file);
+    console.log("files", req.files);
+    if (req.files) {
+      //creo el obj imagen y lo asigno al user
+      const newImage = {
+        mimeType: req.file.mimetype,
+        filename: req.file.filename,
+        imagePath: req.file.path,
+      };
+      newUser.image = newImage;
+    }
+    console.log(newUser);
 
     const savedUser = await newUser.save();
     //guardo el token y lo devuelvo
     const token = jwt.sign({ id: savedUser._id }, config.SECRET, {
       expiresIn: 86400,
     });
-    res.json({ token });
+    res.json({ ...savedUser._doc, token });
   } catch (error) {
-    res.status(401).json(error);
+    return res.status(401).json(error);
   }
 };
 
 const signIn = async (req, res, next) => {
   try {
     //busco user por mail
-    const userFound = await User.findOne({ email: req.body.email }).populate(
-      "roles"
-    );
+    const userFound = await User.findOne({ email: req.body.email });
 
     //si no lo ecuentro error
-    if (!userFound) res.status(400).json({ message: "User not found" });
+    if (!userFound) return res.status(400).json({ message: "User not found" });
 
     //compruebo si coincide la contraseña
     const matchPassword = await User.comparePassword(
@@ -74,7 +84,7 @@ const signIn = async (req, res, next) => {
       expiresIn: 86400,
     });
 
-    res.json({ token });
+    res.json({ ...userFound._doc, token });
   } catch (error) {
     res.status(401).json(error);
   }

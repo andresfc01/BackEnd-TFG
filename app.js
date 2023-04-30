@@ -1,74 +1,79 @@
-require('dotenv').config();
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
-
+require("dotenv").config();
+var createError = require("http-errors");
+var express = require("express");
+var path = require("path");
+var cookieParser = require("cookie-parser");
+var logger = require("morgan");
 
 var app = express();
-const createRoles = require('./libs/initialSetup');
+
+const cors = require("cors");
+app.use(
+  cors({
+    origin: "*",
+  })
+);
+
+const createRoles = require("./libs/initialSetup");
 createRoles();
 
 // view engine setup
-app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
+app.set("views", path.join(__dirname, "views"));
+app.set("view engine", "jade");
 
-app.use(logger('dev'));
+app.use(logger("dev"));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, "public")));
 
-//esta carpeta se podrá ver en la parte publica del navegador 
-app.use('/uploads', express.static(path.resolve('uploads')))
+//esta carpeta se podrá ver en la parte publica del navegador
+app.use("/uploads", express.static(path.resolve("uploads")));
 
-const multer = require('./libs/multer')
+const multer = require("./libs/multer");
 
 //rutas api
-var authRouter = require('./routes/auth.routes');
-app.use('/api/auth',authRouter);
+var authRouter = require("./routes/auth.routes");
+app.use("/api/auth", authRouter);
 
-var medidaRouter = require('./routes/medida.routes');
-app.use('/api/medida',medidaRouter);
+var medidaRouter = require("./routes/medida.routes");
+app.use("/api/medida", medidaRouter);
 
-var pesoRouter = require('./routes/peso.routes');
-app.use('/api/peso',pesoRouter);
+var pesoRouter = require("./routes/peso.routes");
+app.use("/api/peso", pesoRouter);
 
-var userRouter = require('./routes/user.routes');
-app.use('/api/user',userRouter);
+var userRouter = require("./routes/user.routes");
+app.use("/api/user", userRouter);
 
-var grupoMuscularRouter = require('./routes/grupoMuscular.routes');
-app.use('/api/grupoMuscular',grupoMuscularRouter);
+var grupoMuscularRouter = require("./routes/grupoMuscular.routes");
+app.use("/api/grupoMuscular", grupoMuscularRouter);
 
-var ejercicioRouter = require('./routes/ejercicio.routes');
-app.use('/api/ejercicio',ejercicioRouter);
+var ejercicioRouter = require("./routes/ejercicio.routes");
+app.use("/api/ejercicio", ejercicioRouter);
 
-var plantillaEntrenamientoRouter = require('./routes/plantillaEntrenamiento.routes');
-app.use('/api/plantillaEntrenamiento',plantillaEntrenamientoRouter);
+var plantillaEntrenamientoRouter = require("./routes/plantillaEntrenamiento.routes");
+app.use("/api/plantillaEntrenamiento", plantillaEntrenamientoRouter);
 
-var entrenamientoRouter = require('./routes/entrenamiento.routes');
-app.use('/api/entrenamiento',entrenamientoRouter);
-
-
+var entrenamientoRouter = require("./routes/entrenamiento.routes");
+app.use("/api/entrenamiento", entrenamientoRouter);
 
 // catch 404 and forward to error handler
-app.use(function(req, res, next) {
+app.use(function (req, res, next) {
   next(createError(404));
 });
 
 // error handler
-app.use(function(err, req, res, next) {
+app.use(function (err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  res.locals.error = req.app.get("env") === "development" ? err : {};
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render("error");
 });
 
 //db
-require('./database')
+require("./database");
 
 module.exports = app;
