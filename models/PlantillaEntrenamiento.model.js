@@ -25,7 +25,7 @@ const PlantillaEntrenamientoSchema = new Schema(
     },
     dificultad: {
       type: String,
-      enum: ["Principiante", "Intermedio", "Experto"],
+      enum: [0, 1, 2],
     },
     series: [
       {
@@ -54,7 +54,13 @@ const PlantillaEntrenamientoSchema = new Schema(
         },
       },
     ],
+    user: {
+      ref: "User",
+      type: Schema.Types.ObjectId,
+      required: true,
+    },
   },
+
   {
     timestamps: true,
   }

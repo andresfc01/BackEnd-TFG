@@ -25,8 +25,9 @@ const getAllUser = async (req, res, next) => {
   //encuentra las pesos de un alumno solo
   try {
     var ObjectId = require("mongoose").Types.ObjectId;
-    let pesos = await Peso.find({ user: new ObjectId(req.params.user) });
-    res.status(200).json(pesos);
+    let pesos = await Peso.find({ user: new ObjectId(req.params.user) })
+      .sort({ fecha: -1 })
+      .exec();
     res.status(200).json(pesos);
   } catch (error) {
     res.status(401).json(error);

@@ -57,6 +57,9 @@ app.use("/api/plantillaEntrenamiento", plantillaEntrenamientoRouter);
 var entrenamientoRouter = require("./routes/entrenamiento.routes");
 app.use("/api/entrenamiento", entrenamientoRouter);
 
+var logroRouter = require("./routes/logro.routes");
+app.use("/api/logo", logroRouter);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

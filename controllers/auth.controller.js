@@ -37,8 +37,6 @@ const signUp = async (req, res, next) => {
       };
       newUser.image = newImage;
     }
-    console.log("file", req.file);
-    console.log("files", req.files);
     if (req.files) {
       //creo el obj imagen y lo asigno al user
       const newImage = {
@@ -48,7 +46,6 @@ const signUp = async (req, res, next) => {
       };
       newUser.image = newImage;
     }
-    console.log(newUser);
 
     const savedUser = await newUser.save();
     //guardo el token y lo devuelvo

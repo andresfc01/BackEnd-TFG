@@ -27,7 +27,6 @@ const getAllUser = async (req, res, next) => {
     var ObjectId = require("mongoose").Types.ObjectId;
     let medidas = await Medida.find({ user: new ObjectId(req.params.user) });
     res.status(200).json(medidas);
-    res.status(200).json(medidas);
   } catch (error) {
     res.status(401).json(error);
   }

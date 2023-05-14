@@ -2,6 +2,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../config");
 const User = require("../models/User.model");
 const Role = require("../models/Role.model");
+const { token } = require("morgan");
 
 //verifico que el token es correcto, de un usuario que existe
 const verifyToken = async (req, res, next) => {
@@ -9,7 +10,6 @@ const verifyToken = async (req, res, next) => {
     //consigo el token y compruebo que exista
     const token = req.headers["x-access-token"];
     if (!token) return res.status(403).json({ message: "No token provided" });
-
     //lo decodifico para sacar la id del user
     const decoded = jwt.verify(token, config.SECRET);
     req.userId = decoded.id;

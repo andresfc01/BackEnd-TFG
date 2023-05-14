@@ -1,6 +1,7 @@
 const { Schema, model } = require("mongoose");
 const bcrypt = require("bcryptjs");
 const { response } = require("express");
+const { number } = require("yup");
 
 const EntrenamientoSchema = new Schema(
   {
@@ -19,8 +20,11 @@ const EntrenamientoSchema = new Schema(
       default: Date.now,
     },
     sensaciones: {
-      type: String,
-      enum: ["L", "M", "H"],
+      type: Number,
+      enum: [0, 1, 2],
+    },
+    duracion: {
+      type: Number,
     },
     comentario: {
       type: String,
@@ -39,6 +43,12 @@ const EntrenamientoSchema = new Schema(
           required: true,
         },
         peso: {
+          type: Number,
+          min: 0,
+          max: 1000,
+          required: true,
+        },
+        descanso: {
           type: Number,
           min: 0,
           max: 1000,

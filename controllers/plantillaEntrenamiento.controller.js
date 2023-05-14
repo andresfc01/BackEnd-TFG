@@ -1,5 +1,6 @@
 var PlantillaEntrenamiento = require("../models/PlantillaEntrenamiento.model");
-const RoleModel = require("../models/Role.model");
+var Ejercicio = require("../models/Ejercicio.model");
+var User = require("../models/User.model");
 
 /**
  * Get todos
@@ -24,7 +25,45 @@ const getAll = async (req, res, next) => {
  */
 const getById = async (req, res, next) => {
   try {
-    let plantillaEntrenamiento = await PlantillaEntrenamiento.findById(req.params.id);
+    let plantillaEntrenamiento = await PlantillaEntrenamiento.findById(
+      req.params.id
+    )
+      .populate("user") // Popula la propiedad 'user' con el objeto completo del usuario
+      .populate({
+        path: "series",
+        populate: {
+          path: "ejercicio",
+          model: "Ejercicio", // Reemplaza 'Ejercicio' con el nombre de tu modelo de ejercicio
+        },
+      }) // Popula la propiedad 'ejercicio' con el objeto completo del ejercicio
+      .exec();
+    res.status(200).json(plantillaEntrenamiento);
+  } catch (error) {
+    res.status(401).json(error);
+  }
+};
+
+/**
+ * Consigo una plantillaEntrenamiento por user
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+const getByUser = async (req, res, next) => {
+  try {
+    let plantillaEntrenamiento = await PlantillaEntrenamiento.find({
+      user: req.params.userId,
+    })
+      .populate("user") // Popula la propiedad 'user' con el objeto completo del usuario
+      .populate({
+        path: "series",
+        populate: {
+          path: "ejercicio",
+          model: "Ejercicio", // Reemplaza 'Ejercicio' con el nombre de tu modelo de ejercicio
+        },
+      }) // Popula la propiedad 'ejercicio' con el objeto completo del ejercicio
+      .exec();
+
     res.status(200).json(plantillaEntrenamiento);
   } catch (error) {
     res.status(401).json(error);
@@ -39,12 +78,10 @@ const getById = async (req, res, next) => {
  */
 const create = async (req, res, next) => {
   try {
-    const { nombre } =
-      req.body;
-
-    const newPlantillaEntrenamiento = new PlantillaEntrenamiento({
-      nombre,
-    });
+    const plantilla = req.body;
+    plantilla.series = JSON.parse(plantilla.series);
+    plantilla.diasSemana = JSON.parse(plantilla.diasSemana);
+    const newPlantillaEntrenamiento = new PlantillaEntrenamiento(plantilla);
 
     if (req.file) {
       //creo el obj imagen y lo asigno al plantillaEntrenamiento
@@ -73,17 +110,34 @@ const create = async (req, res, next) => {
  */
 const update = async (req, res, next) => {
   //compruebo si esta editando su propio perfil, si no no puede
-  if (req.plantillaEntrenamientoId == req.body._id) {
+  if (req.params.id == req.body._id) {
+    const plantilla = req.body;
+    
     try {
-      let plantillaEntrenamiento = await PlantillaEntrenamiento.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      });
+      let plantillaEntrenamiento =
+        await PlantillaEntrenamiento.findByIdAndUpdate(
+          req.params.id,
+          plantilla,
+          {
+            new: true,
+          }
+        )
+          .populate("user") // Popula la propiedad 'user' con el objeto completo del usuario
+          .populate({
+            path: "series",
+            populate: {
+              path: "ejercicio",
+              model: "Ejercicio", // Reemplaza 'Ejercicio' con el nombre de tu modelo de ejercicio
+            },
+          });
       res.status(200).json(plantillaEntrenamiento);
     } catch (error) {
       res.status(401).json(error);
     }
-  }else{
-    res.status(402).json('Unauthorized, you can edit only your plantillaEntrenamiento');
+  } else {
+    res
+      .status(402)
+      .json("Unauthorized, you can edit only your plantillaEntrenamiento");
   }
 };
 
@@ -102,4 +156,4 @@ const remove = async (req, res, next) => {
   }
 };
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = { getAll, getById, create, update, remove, getByUser };

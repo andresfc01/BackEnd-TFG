@@ -24,7 +24,43 @@ const getAll = async (req, res, next) => {
  */
 const getById = async (req, res, next) => {
   try {
-    let entrenamiento = await Entrenamiento.findById(req.params.id);
+    let entrenamiento = await Entrenamiento.findById(req.params.id)
+      .populate({
+        path: "series",
+        populate: {
+          path: "ejercicio",
+          model: "Ejercicio", // Reemplaza 'Ejercicio' con el nombre de tu modelo de ejercicio
+        },
+      })
+      .populate("plantilla");
+    res.status(200).json(entrenamiento);
+  } catch (error) {
+    res.status(401).json(error);
+  }
+};
+
+/**
+ * Consigo una plantillaEntrenamiento por user
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+const getByUser = async (req, res, next) => {
+  try {
+    let entrenamiento = await Entrenamiento.find({
+      user: req.params.userId,
+    })
+      /* .populate("user") */ // Popula la propiedad 'user' con el objeto completo del usuario
+      .populate({
+        path: "series",
+        populate: {
+          path: "ejercicio",
+          model: "Ejercicio", // Reemplaza 'Ejercicio' con el nombre de tu modelo de ejercicio
+        },
+      }) // Popula la propiedad 'ejercicio' con el objeto completo del ejercicio
+      .populate("plantilla")
+      .exec();
+
     res.status(200).json(entrenamiento);
   } catch (error) {
     res.status(401).json(error);
@@ -39,14 +75,12 @@ const getById = async (req, res, next) => {
  */
 const create = async (req, res, next) => {
   try {
-    const { nombre } =
-      req.body;
+    const entrenamiento = req.body;
+    console.log(entrenamiento);
 
-    const newEntrenamiento = new Entrenamiento({
-      nombre,
-    });
+    const newEntrenamiento = new Entrenamiento(entrenamiento);
 
-    if (req.file) {
+    /* if (req.file) {
       //creo el obj imagen y lo asigno al entrenamiento
       const newImage = {
         mimeType: req.file.mimetype,
@@ -54,13 +88,14 @@ const create = async (req, res, next) => {
         imagePath: req.file.path,
       };
       newEntrenamiento.image = newImage;
-    }
+    } */
 
     const savedEntrenamiento = await newEntrenamiento.save();
     //guardo el token y lo devuelvo
 
     res.status(201).json(savedEntrenamiento);
   } catch (error) {
+    console.log(error);
     res.status(401).json(error);
   }
 };
@@ -75,15 +110,19 @@ const update = async (req, res, next) => {
   //compruebo si esta editando su propio perfil, si no no puede
   if (req.entrenamientoId == req.body._id) {
     try {
-      let entrenamiento = await Entrenamiento.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      });
+      let entrenamiento = await Entrenamiento.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+          new: true,
+        }
+      );
       res.status(200).json(entrenamiento);
     } catch (error) {
       res.status(401).json(error);
     }
-  }else{
-    res.status(402).json('Unauthorized, you can edit only your entrenamiento');
+  } else {
+    res.status(402).json("Unauthorized, you can edit only your entrenamiento");
   }
 };
 
@@ -102,4 +141,4 @@ const remove = async (req, res, next) => {
   }
 };
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = { getAll, getById, getByUser, create, update, remove };
