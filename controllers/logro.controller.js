@@ -38,9 +38,21 @@ const getById = async (req, res, next) => {
  */
 const create = async (req, res, next) => {
   try {
-    let Logro = await Logro.create(req.body);
-    res.status(201).json(Logro);
+    let newLogro = req.body;
+    console.log(req.file);
+    if (req.file) {
+      //creo el obj imagen y lo asigno al grupoMuscular
+      const newImage = {
+        mimeType: req.file.mimetype,
+        filename: req.file.filename,
+        imagePath: req.file.path,
+      };
+      newLogro.image = newImage;
+    }
+    let logro = await Logro.create(newLogro);
+    res.status(201).json(logro);
   } catch (error) {
+    console.log(error);
     res.status(401).json(error);
   }
 };

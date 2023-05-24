@@ -39,12 +39,9 @@ const getById = async (req, res, next) => {
  */
 const create = async (req, res, next) => {
   try {
-    const { nombre } =
-      req.body;
+    const grupoMuscular = req.body;
 
-    const newGrupoMuscular = new GrupoMuscular({
-      nombre,
-    });
+    const newGrupoMuscular = new GrupoMuscular(grupoMuscular);
 
     if (req.file) {
       //creo el obj imagen y lo asigno al grupoMuscular
@@ -75,15 +72,19 @@ const update = async (req, res, next) => {
   //compruebo si esta editando su propio perfil, si no no puede
   if (req.grupoMuscularId == req.body._id) {
     try {
-      let grupoMuscular = await GrupoMuscular.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      });
+      let grupoMuscular = await GrupoMuscular.findByIdAndUpdate(
+        req.params.id,
+        req.body,
+        {
+          new: true,
+        }
+      );
       res.status(200).json(grupoMuscular);
     } catch (error) {
       res.status(401).json(error);
     }
-  }else{
-    res.status(402).json('Unauthorized, you can edit only your grupoMuscular');
+  } else {
+    res.status(402).json("Unauthorized, you can edit only your grupoMuscular");
   }
 };
 

@@ -10,7 +10,9 @@ var User = require("../models/User.model");
  */
 const getAll = async (req, res, next) => {
   try {
-    let plantillaEntrenamientoes = await PlantillaEntrenamiento.find();
+    let plantillaEntrenamientoes = await PlantillaEntrenamiento.find({
+      privado: false,
+    });
     res.status(200).json(plantillaEntrenamientoes);
   } catch (error) {
     res.status(401).json(error);
@@ -112,7 +114,7 @@ const update = async (req, res, next) => {
   //compruebo si esta editando su propio perfil, si no no puede
   if (req.params.id == req.body._id) {
     const plantilla = req.body;
-    
+
     try {
       let plantillaEntrenamiento =
         await PlantillaEntrenamiento.findByIdAndUpdate(

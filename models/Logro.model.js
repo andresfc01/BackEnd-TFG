@@ -16,6 +16,15 @@ const Logroschema = new Schema(
       enum: ["cant", "porcent"],
       required: true,
     },
+    requisito: {
+      type: Number,
+      required: true,
+    },
+    image: {
+      mimeType: String,
+      filename: String,
+      imagePath: String,
+    },
   },
   {
     timestamps: true,

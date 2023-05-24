@@ -2,6 +2,7 @@ const express = require("express");
 const router = express.Router();
 const LogroController = require("../controllers/logro.controller");
 const { verifyToken, isAdmin } = require("../middleWares/authJwt");
+const multer = require("../libs/multer");
 
 router
   /**
@@ -16,7 +17,11 @@ router
    * POST /api/Logro , code 200
    * comprueba que este logueado
    */
-  .post("/", [verifyToken, isAdmin], LogroController.create)
+  .post(
+    "/",
+    [verifyToken, isAdmin, multer.single("image")],
+    LogroController.create
+  )
   /**
    * PUT /api/Logro/id , code 200
    * comprueba que este logueado y admin

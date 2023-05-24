@@ -34,6 +34,11 @@ const PlantillaEntrenamientoSchema = new Schema(
           type: Schema.Types.ObjectId,
           required: true,
         },
+        plantillaRef: {
+          ref: "PlantillaEntrenamiento",
+          type: Schema.Types.ObjectId,
+          required: true,
+        },
         descanso: {
           type: Number,
           min: 0,
