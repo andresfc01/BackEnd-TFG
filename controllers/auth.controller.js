@@ -87,4 +87,36 @@ const signIn = async (req, res, next) => {
   }
 };
 
-module.exports = { signIn, signUp };
+const update = async (req, res, next) => {
+  try {
+    const user = req.body;
+    console.log(user);
+    const _id = user._id;
+
+    if (req.file) {
+      //creo el obj imagen y lo asigno al user
+      const newImage = {
+        mimeType: req.file.mimetype,
+        filename: req.file.filename,
+        imagePath: req.file.path,
+      };
+      user.image = newImage;
+    }
+
+    const updatedUser = await User.findOneAndUpdate({ _id }, user, {
+      new: true, // Devolver el documento actualizado
+    });
+    //guardo el token y lo devuelvo
+    const token = jwt.sign({ id: updatedUser._id }, config.SECRET, {
+      expiresIn: 86400,
+    });
+    console.log(updatedUser);
+
+    res.json({ ...updatedUser._doc, token });
+  } catch (error) {
+    console.log(error);
+    return res.status(401).json(error);
+  }
+};
+
+module.exports = { signIn, signUp, update };

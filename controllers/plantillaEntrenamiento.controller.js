@@ -81,8 +81,12 @@ const getByUser = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     const plantilla = req.body;
+    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", plantilla);
     plantilla.series = JSON.parse(plantilla.series);
     plantilla.diasSemana = JSON.parse(plantilla.diasSemana);
+    if (typeof plantilla.image === "string") {
+      plantilla.image = JSON.parse(plantilla.image);
+    }
     const newPlantillaEntrenamiento = new PlantillaEntrenamiento(plantilla);
 
     if (req.file) {
@@ -96,9 +100,18 @@ const create = async (req, res, next) => {
     }
 
     const savedPlantillaEntrenamiento = await newPlantillaEntrenamiento.save();
-    //guardo el token y lo devuelvo
 
-    res.status(201).json(savedPlantillaEntrenamiento);
+    const populatedPlantillaEntrenamiento =
+      await savedPlantillaEntrenamiento.populate({
+        path: "series",
+        populate: {
+          path: "ejercicio",
+          model: "Ejercicio", // Reemplaza 'Ejercicio' con el nombre de tu modelo de ejercicio
+        },
+      });
+    console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbb", populatedPlantillaEntrenamiento);
+
+    res.status(201).json(populatedPlantillaEntrenamiento);
   } catch (error) {
     res.status(401).json(error);
   }
