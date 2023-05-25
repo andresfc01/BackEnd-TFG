@@ -19,6 +19,42 @@ const getAll = async (req, res, next) => {
   }
 };
 
+const getMasUtilizadas = async (req, res, next) => {
+  try {
+    const plantillasMasUtilizadas = await PlantillaEntrenamiento.aggregate([
+      {
+        $match: {
+          privado: false,
+        },
+      },
+      {
+        $group: {
+          _id: "$plantillaRef",
+          count: { $sum: 1 },
+        },
+      },
+      {
+        $sort: {
+          count: -1,
+        },
+      },
+    ]);
+
+    const plantillas = await PlantillaEntrenamiento.find({
+      _id: { $in: plantillasMasUtilizadas.map((item) => item._id) },
+    });
+    console.log(plantillas);
+    const plantillasNoNulas = plantillas.filter((item) => item._id !== null);
+
+    res.json(plantillasNoNulas);
+  } catch (error) {
+    console.error(error);
+    res
+      .status(500)
+      .json({ error: "Error al obtener las plantillas más utilizadas" });
+  }
+};
+
 /**
  * Consigo una plantillaEntrenamiento por id
  * @param {*} req
@@ -81,7 +117,6 @@ const getByUser = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     const plantilla = req.body;
-    console.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa", plantilla);
     plantilla.series = JSON.parse(plantilla.series);
     plantilla.diasSemana = JSON.parse(plantilla.diasSemana);
     if (typeof plantilla.image === "string") {
@@ -109,7 +144,6 @@ const create = async (req, res, next) => {
           model: "Ejercicio", // Reemplaza 'Ejercicio' con el nombre de tu modelo de ejercicio
         },
       });
-    console.log("bbbbbbbbbbbbbbbbbbbbbbbbbbb", populatedPlantillaEntrenamiento);
 
     res.status(201).json(populatedPlantillaEntrenamiento);
   } catch (error) {
@@ -171,4 +205,12 @@ const remove = async (req, res, next) => {
   }
 };
 
-module.exports = { getAll, getById, create, update, remove, getByUser };
+module.exports = {
+  getAll,
+  getById,
+  create,
+  update,
+  remove,
+  getByUser,
+  getMasUtilizadas,
+};
