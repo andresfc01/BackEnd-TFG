@@ -40,18 +40,23 @@ const getMasUtilizadas = async (req, res, next) => {
       },
     ]);
 
-    const plantillas = await PlantillaEntrenamiento.find({
+    const plantillasUtilizadas = await PlantillaEntrenamiento.find({
       _id: { $in: plantillasMasUtilizadas.map((item) => item._id) },
     });
-    console.log(plantillas);
-    const plantillasNoNulas = plantillas.filter((item) => item._id !== null);
 
-    res.json(plantillasNoNulas);
+    const plantillasNoUtilizadas = await PlantillaEntrenamiento.find({
+      _id: { $nin: plantillasMasUtilizadas.map((item) => item._id) },
+    });
+
+    const todasLasPlantillas = [
+      ...plantillasUtilizadas,
+      ...plantillasNoUtilizadas,
+    ];
+
+    res.json(todasLasPlantillas);
   } catch (error) {
     console.error(error);
-    res
-      .status(500)
-      .json({ error: "Error al obtener las plantillas más utilizadas" });
+    res.status(500).json({ error: "Error al obtener las plantillas" });
   }
 };
 

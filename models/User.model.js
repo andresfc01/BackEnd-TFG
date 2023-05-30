@@ -28,10 +28,25 @@ const UserSchema = new Schema(
       filename: String,
       imagePath: String,
     },
-
     objetivoFisico: {
       type: String,
       enum: ["Perdida grasa", "Mantenimiento", "Ganancia de peso"],
+      required: true,
+    },
+    nivelExperiencia: {
+      type: Number,
+      enum: [0, 1, 2],
+      required: true,
+    },
+    altura: {
+      type: Number,
+      required: true,
+      min: [120, "La altura mínima debe ser de 120 cm"],
+      max: [250, "La altura máxima debe ser de 250 cm"],
+    },
+    sexo: {
+      type: String,
+      enum: ["M", "F"],
       required: true,
     },
     pesoObjetivo: {

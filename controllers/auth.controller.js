@@ -5,8 +5,17 @@ const RoleModel = require("../models/Role.model");
 
 const signUp = async (req, res, next) => {
   try {
-    const { username, email, password, roles, objetivoFisico, pesoObjetivo } =
-      req.body;
+    const {
+      username,
+      email,
+      password,
+      roles,
+      objetivoFisico,
+      pesoObjetivo,
+      sexo,
+      altura,
+      nivelExperiencia,
+    } = req.body;
 
     const newUser = new User({
       username,
@@ -14,6 +23,9 @@ const signUp = async (req, res, next) => {
       password: await User.encryptPassword(password),
       objetivoFisico,
       pesoObjetivo,
+      sexo,
+      altura,
+      nivelExperiencia,
     });
 
     //asgino los roles
