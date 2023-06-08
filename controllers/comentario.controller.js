@@ -10,9 +10,9 @@ var User = require("../models/User.model");
  */
 const getAll = async (req, res, next) => {
   try {
-    let comentarios = await Comentario.find({
-      privado: false,
-    });
+    let comentarios = await Comentario.find()
+      .populate("user")
+      .populate("plantilla");
     res.status(200).json(comentarios);
   } catch (error) {
     res.status(401).json(error);
@@ -29,7 +29,7 @@ const getById = async (req, res, next) => {
   try {
     let comentario = await Comentario.findById(req.params.id)
       .populate("user") // Popula la propiedad 'user' con el objeto completo del usuario
-      .populate("plantilla") // Popula la propiedad 'ejercicio' con el objeto completo del ejercicio
+      .populate("comentario") // Popula la propiedad 'ejercicio' con el objeto completo del ejercicio
       .exec();
     res.status(200).json(comentario);
   } catch (error) {
@@ -46,7 +46,7 @@ const getById = async (req, res, next) => {
 const getByPlantilla = async (req, res, next) => {
   try {
     let comentario = await Comentario.find({
-      plantilla: req.params.idPlantilla,
+      comentario: req.params.idPlantilla,
     })
       .populate("user") // Popula la propiedad 'user' con el objeto completo del usuario
       .exec();
@@ -64,33 +64,18 @@ const getByPlantilla = async (req, res, next) => {
  */
 const create = async (req, res, next) => {
   try {
-    const plantilla = req.body;
-    plantilla.series = JSON.parse(plantilla.series);
-    plantilla.diasSemana = JSON.parse(plantilla.diasSemana);
-    if (typeof plantilla.image === "string") {
-      plantilla.image = JSON.parse(plantilla.image);
-    }
-    const newComentario = new Comentario(plantilla);
-
-    if (req.file) {
-      //creo el obj imagen y lo asigno al comentario
-      const newImage = {
-        mimeType: req.file.mimetype,
-        filename: req.file.filename,
-        imagePath: req.file.path,
-      };
-      newComentario.image = newImage;
-    }
-
+    const comentario = req.body;
+    const newComentario = new Comentario(comentario);
     const savedComentario = await newComentario.save();
 
-    const populatedComentario = await savedComentario
+    const populatedComentario = await Comentario.findById(savedComentario._id)
       .populate("user") // Popula la propiedad 'user' con el objeto completo del usuario
-      .populate("plantilla") // Popula la propiedad 'ejercicio' con el objeto completo del ejercicio
+      .populate("plantilla") // Popula la propiedad 'plantilla' con el objeto completo de la plantilla
       .exec();
 
     res.status(201).json(populatedComentario);
   } catch (error) {
+    console.log(error);
     res.status(401).json(error);
   }
 };
@@ -103,23 +88,20 @@ const create = async (req, res, next) => {
  */
 const update = async (req, res, next) => {
   //compruebo si esta editando su propio perfil, si no no puede
-  if (req.params.id == req.body._id) {
-    const plantilla = req.body;
+  const comentario = req.body;
 
-    try {
-      let comentario = await Comentario.findByIdAndUpdate(
-        req.params.id,
-        plantilla,
-        {
-          new: true,
-        }
-      );
-      res.status(200).json(comentario);
-    } catch (error) {
-      res.status(401).json(error);
-    }
-  } else {
-    res.status(402).json("Unauthorized, you can edit only your comentario");
+  try {
+    let updatedComentario = await Comentario.findByIdAndUpdate(
+      req.params.id,
+      comentario,
+      {
+        new: true,
+      }
+    );
+    res.status(200).json(updatedComentario);
+  } catch (error) {
+    console.log(error);
+    res.status(401).json(error);
   }
 };
 

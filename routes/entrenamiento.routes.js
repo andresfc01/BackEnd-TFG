@@ -1,8 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const {verifyToken, isAdmin} = require("../middleWares/authJwt");
-const multer = require('../libs/multer')
-const EntrenamientoCtrl = require('../controllers/entrenamiento.controller')
+const { verifyToken, isAdmin } = require("../middleWares/authJwt");
+const multer = require("../libs/multer");
+const EntrenamientoCtrl = require("../controllers/entrenamiento.controller");
 
 router
   /**
@@ -14,6 +14,10 @@ router
    * GET /api/entrenamiento, code 200
    */
   .get("/", EntrenamientoCtrl.getAll)
+  /**
+   * GET /api/entrenamiento, code 200
+   */
+  .get("/populated", EntrenamientoCtrl.getAllPopulated)
   /**
    * GET /api/entrenamiento/id , code 200
    */

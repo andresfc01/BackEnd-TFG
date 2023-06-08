@@ -14,6 +14,21 @@ const getAll = async (req, res, next) => {
     res.status(401).json(error);
   }
 };
+/**
+ * Get todos
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+const getAllPopulated = async (req, res, next) => {
+  try {
+    let ejercicios = await Ejercicio.find().populate("grupoMuscular");
+    res.status(200).json(ejercicios);
+  } catch (error) {
+    console.log(error);
+    res.status(401).json(error);
+  }
+};
 
 /**
  * Consigo una ejercicio por id
@@ -39,7 +54,7 @@ const getById = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     let ej = req.body;
-
+    console.log(ej);
     if (req.file) {
       //creo el obj imagen y lo asigno al user
       const newImage = {
@@ -89,4 +104,4 @@ const remove = async (req, res, next) => {
   }
 };
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = { getAll, getById, create, update, remove, getAllPopulated };

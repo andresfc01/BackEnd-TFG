@@ -18,6 +18,22 @@ const getAll = async (req, res, next) => {
     res.status(401).json(error);
   }
 };
+/**
+ * Get todos
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+const getAllPopulated = async (req, res, next) => {
+  try {
+    let plantillaEntrenamientoes = await PlantillaEntrenamiento.find().populate(
+      "user"
+    );
+    res.status(200).json(plantillaEntrenamientoes);
+  } catch (error) {
+    res.status(401).json(error);
+  }
+};
 
 const getMasUtilizadas = async (req, res, next) => {
   try {
@@ -122,9 +138,13 @@ const getByUser = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     const plantilla = req.body;
-    plantilla.series = JSON.parse(plantilla.series);
-    plantilla.diasSemana = JSON.parse(plantilla.diasSemana);
-    if (typeof plantilla.image === "string") {
+    if (plantilla.series) {
+      plantilla.series = JSON.parse(plantilla.series);
+    }
+    if (plantilla.diasSemana) {
+      plantilla.diasSemana = JSON.parse(plantilla.diasSemana);
+    }
+    if (typeof plantilla.image === "string" && plantilla.image != "undefined") {
       plantilla.image = JSON.parse(plantilla.image);
     }
     const newPlantillaEntrenamiento = new PlantillaEntrenamiento(plantilla);
@@ -152,6 +172,7 @@ const create = async (req, res, next) => {
 
     res.status(201).json(populatedPlantillaEntrenamiento);
   } catch (error) {
+    console.log(error);
     res.status(401).json(error);
   }
 };
@@ -218,4 +239,5 @@ module.exports = {
   remove,
   getByUser,
   getMasUtilizadas,
+  getAllPopulated,
 };

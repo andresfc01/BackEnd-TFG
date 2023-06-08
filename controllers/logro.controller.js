@@ -39,7 +39,7 @@ const getById = async (req, res, next) => {
 const create = async (req, res, next) => {
   try {
     let newLogro = req.body;
-    console.log(req.file);
+    console.log(req.body);
     if (req.file) {
       //creo el obj imagen y lo asigno al grupoMuscular
       const newImage = {
@@ -65,11 +65,26 @@ const create = async (req, res, next) => {
  */
 const update = async (req, res, next) => {
   try {
-    let Logro = await Logro.findByIdAndUpdate(req.params.id, req.body, {
+    let logroUpdated = req.body;
+    if (req.file) {
+      //creo el obj imagen y lo asigno al grupoMuscular
+      const newImage = {
+        mimeType: req.file.mimetype,
+        filename: req.file.filename,
+        imagePath: req.file.path,
+      };
+      logroUpdated.image = newImage;
+    }
+    console.log(req.file);
+    console.log(logroUpdated.image);
+
+    let logro = await Logro.findByIdAndUpdate(req.params.id, logroUpdated, {
       new: true,
     });
-    res.status(200).json(Logro);
+
+    res.status(200).json(logro);
   } catch (error) {
+    console.log(error);
     res.status(401).json(error);
   }
 };

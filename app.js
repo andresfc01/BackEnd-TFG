@@ -60,6 +60,9 @@ app.use("/api/entrenamiento", entrenamientoRouter);
 var logroRouter = require("./routes/logro.routes");
 app.use("/api/logro", logroRouter);
 
+var comentarioRouter = require("./routes/comentario.routes");
+app.use("/api/comentario", comentarioRouter);
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   next(createError(404));

@@ -16,6 +16,21 @@ const getAll = async (req, res, next) => {
 };
 
 /**
+ * Get todos
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+const getAllPopulated = async (req, res, next) => {
+  try {
+    let medidas = await Medida.find().populate("user");
+    res.status(200).json(medidas);
+  } catch (error) {
+    res.status(401).json(error);
+  }
+};
+
+/**
  * Get todas las medidas de un user
  * @param {*} req
  * @param {*} res
@@ -55,6 +70,7 @@ const getById = async (req, res, next) => {
  */
 const create = async (req, res, next) => {
   try {
+    console.log(req.body);
     let medida = await Medida.create(req.body);
     res.status(201).json(medida);
   } catch (error) {
@@ -94,4 +110,12 @@ const remove = async (req, res, next) => {
   }
 };
 
-module.exports = { getAll, getAllUser, getById, create, update, remove };
+module.exports = {
+  getAll,
+  getAllUser,
+  getById,
+  create,
+  update,
+  remove,
+  getAllPopulated,
+};

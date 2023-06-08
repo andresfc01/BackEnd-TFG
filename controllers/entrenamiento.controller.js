@@ -40,6 +40,23 @@ const getById = async (req, res, next) => {
 };
 
 /**
+ * Get todos
+ * @param {*} req
+ * @param {*} res
+ * @param {*} next
+ */
+const getAllPopulated = async (req, res, next) => {
+  try {
+    let entrenamientos = await Entrenamiento.find()
+      .populate("user")
+      .populate("plantilla");
+    res.status(200).json(entrenamientos);
+  } catch (error) {
+    res.status(401).json(error);
+  }
+};
+
+/**
  * Consigo una plantillaEntrenamiento por user
  * @param {*} req
  * @param {*} res
@@ -141,4 +158,12 @@ const remove = async (req, res, next) => {
   }
 };
 
-module.exports = { getAll, getById, getByUser, create, update, remove };
+module.exports = {
+  getAll,
+  getById,
+  getByUser,
+  create,
+  update,
+  remove,
+  getAllPopulated,
+};

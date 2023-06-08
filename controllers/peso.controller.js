@@ -8,7 +8,7 @@ var Peso = require("../models/Peso.model");
  */
 const getAll = async (req, res, next) => {
   try {
-    let pesos = await Peso.find();
+    let pesos = await Peso.find().populate("user");
     res.status(200).json(pesos);
   } catch (error) {
     res.status(401).json(error);

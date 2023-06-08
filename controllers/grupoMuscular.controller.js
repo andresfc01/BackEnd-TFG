@@ -70,21 +70,28 @@ const create = async (req, res, next) => {
  */
 const update = async (req, res, next) => {
   //compruebo si esta editando su propio perfil, si no no puede
-  if (req.grupoMuscularId == req.body._id) {
-    try {
-      let grupoMuscular = await GrupoMuscular.findByIdAndUpdate(
-        req.params.id,
-        req.body,
-        {
-          new: true,
-        }
-      );
-      res.status(200).json(grupoMuscular);
-    } catch (error) {
-      res.status(401).json(error);
+
+  try {
+    let grupoMuscular = req.body;
+    if (req.file) {
+      //creo el obj imagen y lo asigno al grupoMuscular
+      const newImage = {
+        mimeType: req.file.mimetype,
+        filename: req.file.filename,
+        imagePath: req.file.path,
+      };
+      grupoMuscular.image = newImage;
     }
-  } else {
-    res.status(402).json("Unauthorized, you can edit only your grupoMuscular");
+    let newGrupoMuscular = await GrupoMuscular.findByIdAndUpdate(
+      req.params.id,
+      grupoMuscular,
+      {
+        new: true,
+      }
+    );
+    res.status(200).json(newGrupoMuscular);
+  } catch (error) {
+    res.status(401).json(error);
   }
 };
 

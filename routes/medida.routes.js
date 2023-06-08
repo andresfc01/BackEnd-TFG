@@ -1,13 +1,14 @@
 const express = require("express");
 const router = express.Router();
 const MediaCtrl = require("../controllers/medida.controller");
-const {verifyToken, isAdmin} = require("../middleWares/authJwt");
+const { verifyToken, isAdmin } = require("../middleWares/authJwt");
 
 router
   /**
    * GET /api/medida, code 200
    */
   .get("/", MediaCtrl.getAll)
+  .get("/populated", MediaCtrl.getAllPopulated)
   /**
    * GET /api/medida/user/:iduser, code 200
    */

@@ -89,18 +89,18 @@ const create = async (req, res, next) => {
  */
 const update = async (req, res, next) => {
   //compruebo si esta editando su propio perfil, si no no puede
-  if (req.userId == req.body._id) {
-    try {
-      let user = await User.findByIdAndUpdate(req.params.id, req.body, {
-        new: true,
-      });
-      res.status(200).json(user);
-    } catch (error) {
-      res.status(401).json(error);
-    }
-  }else{
-    res.status(402).json('Unauthorized, you can edit only your user');
+  /* if (req.userId == req.body._id) { */
+  try {
+    let user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    res.status(200).json(user);
+  } catch (error) {
+    res.status(401).json(error);
   }
+  /* }else{
+    res.status(402).json('Unauthorized, you can edit only your user');
+  } */
 };
 
 /**

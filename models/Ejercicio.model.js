@@ -3,7 +3,7 @@ const { Schema, model } = require("mongoose");
 const EjercicioSchema = new Schema(
   {
     grupoMuscular: {
-      ref: "grupoMuscular",
+      ref: "GrupoMuscular",
       type: Schema.Types.ObjectId,
       required: true,
     },

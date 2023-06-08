@@ -33,6 +33,7 @@ router
    */
   .get("/", PlantillaEntrenamientoCtrl.getAll)
   .get("/masUsadas", PlantillaEntrenamientoCtrl.getMasUtilizadas)
+  .get("/populated", PlantillaEntrenamientoCtrl.getAllPopulated)
   /**
    * GET /api/grupoMuscular/id , code 200
    */

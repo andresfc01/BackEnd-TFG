@@ -62,7 +62,7 @@ const signUp = async (req, res, next) => {
     const savedUser = await newUser.save();
     //guardo el token y lo devuelvo
     const token = jwt.sign({ id: savedUser._id }, config.SECRET, {
-      expiresIn: 86400,
+      /* expiresIn: 86400, */
     });
     res.json({ ...savedUser._doc, token });
   } catch (error) {
@@ -120,7 +120,7 @@ const update = async (req, res, next) => {
     });
     //guardo el token y lo devuelvo
     const token = jwt.sign({ id: updatedUser._id }, config.SECRET, {
-      expiresIn: 86400,
+      /* expiresIn: 86400, */
     });
     console.log(updatedUser);
 
